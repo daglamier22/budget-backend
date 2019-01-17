@@ -1,0 +1,19 @@
+{
+  "name": "budget-backend",
+  "version": "0.0.1",
+  "description": "NodeJS backend for personal budget app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daglamier22/budget-backend.git"
+  },
+  "author": "Brian McCarthy <daglamier22@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daglamier22/budget-backend/issues"
+  },
+  "homepage": "https://github.com/daglamier22/budget-backend#readme"
+}
