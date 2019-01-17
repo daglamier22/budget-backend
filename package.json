@@ -4,7 +4,8 @@
   "description": "NodeJS backend for personal budget app",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/daglamier22/budget-backend/issues"
   },
-  "homepage": "https://github.com/daglamier22/budget-backend#readme"
+  "homepage": "https://github.com/daglamier22/budget-backend#readme",
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }
