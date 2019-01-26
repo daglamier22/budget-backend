@@ -10,7 +10,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/helloworld', (req, res) => {
-  res.json('Hello World!');
+  res.json({message: 'Hello World!'});
 });
 
 app.listen(process.env.PORT || 3000);
