@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/daglamier22/budget-backend#readme",
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.12.1",
     "nodemon": "^1.18.9"
   },
   "dependencies": {
