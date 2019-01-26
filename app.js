@@ -9,7 +9,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/helloworld', (req, res, next) => {
+app.use('/helloworld', (req, res) => {
   res.json('Hello World!');
 });
 
