@@ -9,8 +9,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/helloworld', (req, res) => {
-  res.json({message: 'Hello World!'});
-});
+const testRoutes = require('./routes/tests');
+
+app.use('/tests', testRoutes);
 
 app.listen(process.env.PORT || 3000);
