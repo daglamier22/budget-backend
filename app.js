@@ -68,17 +68,6 @@ app.use(authRoutes);
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true})
   .then(result => {
-    User.findOne()
-      .then(user => {
-        if (!user) {
-          const newUser = new User({
-            name: 'Max',
-            email: 'max@test.com'
-          });
-          newUser.save();
-        }
-      })
-      .catch();
     app.listen(process.env.PORT || 3000);
   })
   .catch(err => {
