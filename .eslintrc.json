@@ -41,6 +41,13 @@
                 "before": false,
                 "after": true
             }
+        ],
+        "no-console": 0,
+        "no-unused-vars": [
+            "error",
+            {
+                "args": "none"
+            }
         ]
     }
 }
