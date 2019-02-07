@@ -3,6 +3,7 @@
     "NODE_ENV": "development",
     "MONGO_USER": "budget-dev",
     "MONGO_PASSWORD": "WlOCJ4h7CVyz3OGB",
-    "MONGO_DEFAULT_DATABASE": "budget-dev"
+    "MONGO_DEFAULT_DATABASE": "budget-dev",
+    "JWT_SECRET": "testonlysecret"
   }
 }
