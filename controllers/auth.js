@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
@@ -35,7 +36,7 @@ exports.postLogin = async (req, res, next) => {
   const password = req.body.password;
 
   try {
-    const user = await User.findOne({email: email})
+    const user = await User.findOne({email: email});
     if (!user) {
       console.log('postLogin: User not found -', email);
       return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
@@ -45,32 +46,18 @@ exports.postLogin = async (req, res, next) => {
       console.log('postLogin: Password does not match for user -', email);
       return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
     }
-    req.session.isLoggedIn = true;
-    req.session.user = user;
-    req.session.save(err => {
-      if (err) {
-        console.log(err);
-      }
-      console.log('postLogin: User successfully logged in -', email);
-      return res.json({status: 'SUCCESS', message: 'User logged in.'});
-    });
+    const token = jwt.sign(
+      {
+        email: user.email,
+        userId: user._id.toString()
+      },
+      'somesupersecretsecret',
+      { expiresIn: '1h'}
+    );
+    console.log('postLogin: User successfully logged in -', email);
+    return res.json({status: 'SUCCESS', message: 'User logged in.', token: token, userId: user._id.toString()});
   } catch(err) {
     console.log('postLogin:', err);
     return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
   }
-};
-
-exports.postLogout =  (req, res, next) => {
-  if (!req.user) {
-    console.log('postLogout: No user logged in');
-    return res.json({status: 'FAILURE', message: 'No user logged in'});
-  }
-  req.session.destroy((err) => {
-    if (err) {
-      console.log('postLogout:', err);
-      return res.json({status: 'FAILURE', message: err});
-    }
-    console.log('postLogout: User successfully logged out', req.user.email);
-    return res.json({status: 'SUCCESS', message: 'User logged out'});
-  });
 };
