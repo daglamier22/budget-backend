@@ -1,6 +1,6 @@
 {
   "name": "budget-backend",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "NodeJS backend for personal budget app",
   "main": "app.js",
   "scripts": {
