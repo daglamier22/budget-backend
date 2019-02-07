@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
-exports.postSignup =  (req, res, next) => {
+exports.postSignup = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -11,67 +11,53 @@ exports.postSignup =  (req, res, next) => {
     console.log('postSignup: Passwords do not match -', email);
     return res.status(400).json({status: 'FAILURE', message: 'Passwords do not match'});
   }
-  User.findOne({email: email})
-    .then(user => {
-      if (user) {
-        console.log('postSignup: User already exists -', email);
-        return res.status(400).json({status: 'FAILURE', message: 'User already exists'});
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const newUser = new User({
-            email: email,
-            password: hashedPassword
-          });
-          return newUser
-            .save();
-        })
-        .then(result => {
-          console.log('postSignup: User created -', email);
-          return res.status(201).json({status: 'SUCCESS', message: 'User created'});
-        });
-    })
-    .catch(err => {
-      console.log('postSignup:', err);
+  try {
+    const user = await User.findOne({email: email});
+    if (user) {
+      console.log('postSignup: User already exists -', email);
+      return res.status(400).json({status: 'FAILURE', message: 'User already exists'});
+    }
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newUser = new User({
+      email: email,
+      password: hashedPassword
     });
+    const result = await newUser.save();
+    console.log('postSignup: User created -', email);
+    return res.status(201).json({status: 'SUCCESS', message: 'User created', id: result._id});
+  } catch(err) {
+    console.log('postSignup:', err);
+  }
 };
 
-exports.postLogin =  (req, res, next) => {
+exports.postLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  User.findOne({email: email})
-    .then(user => {
-      if (!user) {
-        console.log('postLogin: User not found -', email);
-        return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+  try {
+    const user = await User.findOne({email: email})
+    if (!user) {
+      console.log('postLogin: User not found -', email);
+      return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+    }
+    const doMatch = await bcrypt.compare(password, user.password);
+    if (!doMatch) {
+      console.log('postLogin: Password does not match for user -', email);
+      return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+    }
+    req.session.isLoggedIn = true;
+    req.session.user = user;
+    req.session.save(err => {
+      if (err) {
+        console.log(err);
       }
-      bcrypt
-        .compare(password, user.password)
-        .then(doMatch => {
-          if (doMatch) {
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            return req.session.save(err => {
-              if (err) {
-                console.log(err);
-              }
-              console.log('postLogin: User successfully logged in -', email);
-              return res.json({status: 'SUCCESS', message: 'User logged in.'});
-            });
-          }
-          console.log('postLogin: Password does not match for user -', email);
-          return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
-        })
-        .catch(err => {
-          console.log('postLogin:', err);
-          return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
-        });
-    })
-    .catch(err => {
-      console.log('postLogin:', err);
+      console.log('postLogin: User successfully logged in -', email);
+      return res.json({status: 'SUCCESS', message: 'User logged in.'});
     });
+  } catch(err) {
+    console.log('postLogin:', err);
+    return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+  }
 };
 
 exports.postLogout =  (req, res, next) => {
