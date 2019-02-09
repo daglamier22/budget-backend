@@ -45,7 +45,7 @@ app.use(helmet());
 // log incoming requests
 app.use(morgan('combined'));
 
-app.use('/tests', testRoutes);
+app.use(testRoutes);
 app.use(authRoutes);
 
 mongoose
