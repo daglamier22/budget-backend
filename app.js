@@ -51,7 +51,7 @@ app.use(authRoutes);
 app.use(accountRoutes);
 
 mongoose
-  .connect(MONGODB_URI, { useNewUrlParser: true})
+  .connect(MONGODB_URI, { useNewUrlParser: true, useCreateIndex: true })
   .then(result => {
     app.listen(process.env.PORT || 3000);
   })
