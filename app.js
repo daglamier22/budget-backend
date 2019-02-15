@@ -9,6 +9,7 @@ const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO
 
 const testRoutes = require('./routes/tests');
 const authRoutes = require('./routes/auth');
+const accountRoutes = require('./routes/account');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use(morgan('combined'));
 
 app.use(testRoutes);
 app.use(authRoutes);
+app.use(accountRoutes);
 
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true})
