@@ -1,22 +1,32 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator/check');
 
 const User = require('../models/user');
 
 exports.postSignup = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
 
-  if (password != confirmPassword) {
-    console.log('postSignup: Passwords do not match -', email);
-    return res.status(400).json({status: 'FAILURE', message: 'Passwords do not match'});
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log('postSignup: Error -', errors.array()[0].msg);
+    return res.status(422).json({
+      message: errors.array()[0].msg,
+      status: 'FAILURE'
+    });
   }
+
+  console.log('postSignup: Request -', req.body);
+
   try {
     const user = await User.findOne({email: email});
     if (user) {
       console.log('postSignup: User already exists -', email);
-      return res.status(400).json({status: 'FAILURE', message: 'User already exists'});
+      return res.status(400).json({
+        message: 'User already exists',
+        status: 'FAILURE'
+      });
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
@@ -25,9 +35,19 @@ exports.postSignup = async (req, res, next) => {
     });
     const result = await newUser.save();
     console.log('postSignup: User created -', email);
-    return res.status(201).json({status: 'SUCCESS', message: 'User created', id: result._id});
+    return res.status(201).json({
+      message: 'User created',
+      status: 'SUCCESS',
+      values: {
+        id: result._id
+      }
+    });
   } catch(err) {
-    console.log('postSignup:', err);
+    console.log('postSignup: Response Error -', err.toString());
+    res.status(err.statuscode | 500).json({
+      message: 'Unable to create user',
+      status: 'FAILURE'
+    });
   }
 };
 
@@ -35,16 +55,33 @@ exports.postLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log('postLogin: Error -', errors.array()[0].msg);
+    return res.status(422).json({
+      message: errors.array()[0].msg,
+      status: 'FAILURE'
+    });
+  }
+
+  console.log('postLogin: Request -', req.body);
+
   try {
     const user = await User.findOne({email: email});
     if (!user) {
       console.log('postLogin: User not found -', email);
-      return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+      return res.status(401).json({
+        message: 'Invalid email or password.',
+        status: 'FAILURE'
+      });
     }
     const doMatch = await bcrypt.compare(password, user.password);
     if (!doMatch) {
       console.log('postLogin: Password does not match for user -', email);
-      return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+      return res.status(401).json({
+        message: 'Invalid email or password.',
+        status: 'FAILURE'
+      });
     }
     const token = jwt.sign(
       {
@@ -55,9 +92,19 @@ exports.postLogin = async (req, res, next) => {
       { expiresIn: '1h'}
     );
     console.log('postLogin: User successfully logged in -', email);
-    return res.json({status: 'SUCCESS', message: 'User logged in.', token: token, userId: user._id.toString()});
+    return res.json({
+      message: 'User logged in.',
+      status: 'SUCCESS',
+      values: {
+        token: token,
+        userId: user._id.toString()
+      }
+    });
   } catch(err) {
-    console.log('postLogin:', err);
-    return res.status(401).json({status: 'FAILURE', message: 'Invalid email or password.'});
+    console.log('postLogin: Response Error -', err.toString());
+    return res.status(401).json({
+      message: 'Invalid email or password.',
+      status: 'FAILURE'
+    });
   }
 };
