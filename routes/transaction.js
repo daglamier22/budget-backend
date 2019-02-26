@@ -1,5 +1,5 @@
 const express = require('express');
-const { body } = require('express-validator/check');
+const { body, header } = require('express-validator/check');
 
 const transactionController = require('../controllers/transaction');
 const isAuth = require('../middleware/is-auth');
@@ -9,6 +9,21 @@ const Account = require('../models/account');
 const router = express.Router();
 
 router.get('/get-all-transactions', isAuth, transactionController.getAllTransactions);
+
+router.get('/get-account-transactions',
+  isAuth,
+  [
+    header('accountId').isString().custom((value, { req }) => {
+      return Account.findOne({ userId: req.userId, _id: value })
+        .then(account => {
+          if (!account) {
+            return Promise.reject('An account with this name does not exist');
+          }
+        });
+    })
+  ],
+  transactionController.getAccountTransactions
+);
 
 router.post(
   '/add-transaction',
