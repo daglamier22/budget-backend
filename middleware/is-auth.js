@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   } catch(err) {
     console.log('Not authenticated');
-    return res.status(500).json({status: 'FAILURE', message: 'Not authenticated'});
+    return res.status(401).json({status: 'FAILURE', message: 'Not authenticated'});
   }
   if (!decodedToken) {
     console.log('Not authenticated');

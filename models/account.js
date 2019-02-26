@@ -14,7 +14,8 @@ const accountSchema = new Schema({
   },
   accountName: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   accountType: {
     type: String,
