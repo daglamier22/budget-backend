@@ -32,7 +32,10 @@ exports.getAllTransactions = async (req, res, next) => {
     console.log('getTransactions: Response Error -', req.userId, err.toString());
     res.status(err.statuscode | 500).json({
       message: 'Unable to retrieve transactions',
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        transactions: []
+      }
     });
   }
 };
@@ -44,7 +47,10 @@ exports.getAccountTransactions = async (req, res, next) => {
     console.log('getAccountTransactions: Error -', message);
     return res.status(400).json({
       message: message,
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        transactions: []
+      }
     });
   }
 
@@ -77,7 +83,10 @@ exports.getAccountTransactions = async (req, res, next) => {
     console.log('getAccountTransactions: Response Error -', req.userId, err.toString());
     res.status(err.statuscode | 500).json({
       message: 'Unable to retrieve transactions',
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        transactions: []
+      }
     });
   }
 };

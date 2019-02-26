@@ -13,7 +13,12 @@ exports.postSignup = async (req, res, next) => {
     console.log('postSignup: Error -', errors.array()[0].msg);
     return res.status(422).json({
       message: errors.array()[0].msg,
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        id: undefined,
+        token: undefined,
+        userId: undefined
+      }
     });
   }
 
@@ -25,7 +30,12 @@ exports.postSignup = async (req, res, next) => {
       console.log('postSignup: User already exists -', email);
       return res.status(400).json({
         message: 'User already exists',
-        status: 'FAILURE'
+        status: 'FAILURE',
+        values: {
+          id: undefined,
+          token: undefined,
+          userId: undefined
+        }
       });
     }
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -39,14 +49,21 @@ exports.postSignup = async (req, res, next) => {
       message: 'User created',
       status: 'SUCCESS',
       values: {
-        id: result._id
+        id: result._id,
+        token: undefined,
+        userId: undefined
       }
     });
   } catch(err) {
     console.log('postSignup: Response Error -', err.toString());
     res.status(err.statuscode | 500).json({
       message: 'Unable to create user',
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        id: undefined,
+        token: undefined,
+        userId: undefined
+      }
     });
   }
 };
@@ -60,7 +77,12 @@ exports.postLogin = async (req, res, next) => {
     console.log('postLogin: Error -', errors.array()[0].msg);
     return res.status(422).json({
       message: errors.array()[0].msg,
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        id: undefined,
+        token: undefined,
+        userId: undefined
+      }
     });
   }
 
@@ -72,7 +94,12 @@ exports.postLogin = async (req, res, next) => {
       console.log('postLogin: User not found -', email);
       return res.status(401).json({
         message: 'Invalid email or password.',
-        status: 'FAILURE'
+        status: 'FAILURE',
+        values: {
+          id: undefined,
+          token: undefined,
+          userId: undefined
+        }
       });
     }
     const doMatch = await bcrypt.compare(password, user.password);
@@ -80,7 +107,12 @@ exports.postLogin = async (req, res, next) => {
       console.log('postLogin: Password does not match for user -', email);
       return res.status(401).json({
         message: 'Invalid email or password.',
-        status: 'FAILURE'
+        status: 'FAILURE',
+        values: {
+          id: undefined,
+          token: undefined,
+          userId: undefined
+        }
       });
     }
     const token = jwt.sign(
@@ -97,14 +129,20 @@ exports.postLogin = async (req, res, next) => {
       status: 'SUCCESS',
       values: {
         token: token,
-        userId: user._id.toString()
+        userId: user._id.toString(),
+        id: undefined
       }
     });
   } catch(err) {
     console.log('postLogin: Response Error -', err.toString());
     return res.status(401).json({
       message: 'Invalid email or password.',
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        id: undefined,
+        token: undefined,
+        userId: undefined
+      }
     });
   }
 };

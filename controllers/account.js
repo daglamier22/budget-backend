@@ -33,7 +33,10 @@ exports.getAccounts = async (req, res, next) => {
     console.log('getAccounts: Response Error -', req.userId, err.toString());
     res.status(err.statuscode | 500).json({
       message: 'Unable to retrieve accounts',
-      status: 'FAILURE'
+      status: 'FAILURE',
+      values: {
+        accounts: []
+      }
     });
   }
 };
