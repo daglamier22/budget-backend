@@ -26,7 +26,7 @@ exports.getAccounts = async (req, res, next) => {
       message: 'Accounts retrieved',
       status: 'SUCCESS',
       values: {
-        returnedAccounts
+        accounts: returnedAccounts
       }
     });
   } catch (err) {
