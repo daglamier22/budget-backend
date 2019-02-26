@@ -128,7 +128,7 @@ exports.postEditAccount = async (req, res, next) => {
     await account.save();
     console.log('postEditAccount: Response-', req.body._id);
     res.status(200).json({
-      message: 'Account updateed',
+      message: 'Account updated',
       status: 'SUCCESS'
     });
   } catch(err) {

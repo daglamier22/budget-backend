@@ -39,6 +39,11 @@ router.post(
           if (!account) {
             return Promise.reject('Could not find account');
           }
+        })
+        .catch(error => {
+          if (error !== 'Could not find account') {
+            return Promise.reject('Invalid Object ID');
+          }
         });
     }),
     body('firmName').isString(),
