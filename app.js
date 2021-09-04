@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -39,7 +38,7 @@ app.use(cors({
 }));
 
 // parse incoming json post bodies
-app.use(bodyParser.json());
+app.use(express.json());
 
 // add various security headers
 app.use(helmet());
@@ -53,7 +52,7 @@ app.use(accountRoutes);
 app.use(transactionRoutes);
 
 mongoose
-  .connect(MONGODB_URI, { useNewUrlParser: true, useCreateIndex: true })
+  .connect(MONGODB_URI)
   .then(result => {
     app.listen(process.env.PORT || 3000);
   })
