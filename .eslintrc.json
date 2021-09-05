@@ -1,14 +1,12 @@
 {
     "env": {
-        "es6": true,
-        "node": true
+        "node": true,
+        "es2021": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        "ecmaVersion": 12
     },
-    "parser": "babel-eslint",
     "rules": {
         "indent": [
             "error",
@@ -48,6 +46,10 @@
             {
                 "args": "none"
             }
+        ],
+        "space-before-blocks": "error",
+        "arrow-spacing": [
+          "error"
         ]
     }
 }
