@@ -1,5 +1,5 @@
 {
-  "name": "budget-backend",
+  "name": "vibranium",
   "version": "0.0.12",
   "description": "NodeJS backend for personal budget app",
   "main": "app.js",
@@ -10,15 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daglamier22/budget-backend.git"
+    "url": "git+https://github.com/daglamier22/vibranium.git"
   },
   "author": "Brian McCarthy <daglamier22@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/daglamier22/budget-backend/issues"
+    "url": "https://github.com/daglamier22/vibranium/issues"
   },
-  "homepage": "https://github.com/daglamier22/budget-backend#readme",
+  "homepage": "https://github.com/daglamier22/vibranium#readme",
   "dependencies": {
+    "ansi-regex": ">=6.0.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
