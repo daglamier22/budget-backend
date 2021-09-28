@@ -42,7 +42,7 @@ describe('Auth middleware', function() {
     expect(res.errorCode).to.equal(1);
   });
 
-  it('should return an error if the authorization header is only one string', function() {
+  it('should throw an error if the authorization header is only one string', function() {
     const req = {
       get: function(headerName) {
         return 'xyz';
