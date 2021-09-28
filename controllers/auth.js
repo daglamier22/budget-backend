@@ -12,8 +12,9 @@ exports.postSignup = async (req, res, next) => {
   if (!errors.isEmpty()) {
     console.log('postSignup: Error -', errors.array()[0].msg);
     return res.status(422).json({
-      message: errors.array()[0].msg,
-      status: 'FAILURE',
+      apiMessage: errors.array()[0].msg,
+      apiStatus: 'FAILURE',
+      errorCode: 1,
       values: {
         id: undefined,
         token: undefined,
@@ -29,8 +30,9 @@ exports.postSignup = async (req, res, next) => {
     if (user) {
       console.log('postSignup: User already exists -', email);
       return res.status(400).json({
-        message: 'User already exists',
-        status: 'FAILURE',
+        apiMessage: 'User already exists',
+        apiStatus: 'FAILURE',
+        errorCode: 2,
         values: {
           id: undefined,
           token: undefined,
@@ -46,8 +48,9 @@ exports.postSignup = async (req, res, next) => {
     const result = await newUser.save();
     console.log('postSignup: User created -', email);
     return res.status(201).json({
-      message: 'User created',
-      status: 'SUCCESS',
+      apiMessage: 'User created',
+      apiStatus: 'SUCCESS',
+      errorCode: 3,
       values: {
         id: result._id,
         token: undefined,
@@ -57,8 +60,9 @@ exports.postSignup = async (req, res, next) => {
   } catch(err) {
     console.log('postSignup: Response Error -', err.toString());
     res.status(err.statuscode | 500).json({
-      message: 'Unable to create user',
-      status: 'FAILURE',
+      apiMessage: 'Unable to create user',
+      apiStatus: 'FAILURE',
+      errorCode: 4,
       values: {
         id: undefined,
         token: undefined,
@@ -76,8 +80,9 @@ exports.postLogin = async (req, res, next) => {
   if (!errors.isEmpty()) {
     console.log('postLogin: Error -', errors.array()[0].msg);
     return res.status(422).json({
-      message: errors.array()[0].msg,
-      status: 'FAILURE',
+      apiMessage: errors.array()[0].msg,
+      apiStatus: 'FAILURE',
+      errorCode: 1,
       values: {
         id: undefined,
         token: undefined,
@@ -93,8 +98,9 @@ exports.postLogin = async (req, res, next) => {
     if (!user) {
       console.log('postLogin: User not found -', email);
       return res.status(401).json({
-        message: 'Invalid email or password.',
-        status: 'FAILURE',
+        apiMessage: 'Invalid email or password.',
+        apiStatus: 'FAILURE',
+        errorCode: 2,
         values: {
           id: undefined,
           token: undefined,
@@ -106,8 +112,9 @@ exports.postLogin = async (req, res, next) => {
     if (!doMatch) {
       console.log('postLogin: Password does not match for user -', email);
       return res.status(401).json({
-        message: 'Invalid email or password.',
-        status: 'FAILURE',
+        apiMessage: 'Invalid email or password.',
+        apiStatus: 'FAILURE',
+        errorCode: 3,
         values: {
           id: undefined,
           token: undefined,
@@ -124,9 +131,10 @@ exports.postLogin = async (req, res, next) => {
       { expiresIn: '1h'}
     );
     console.log('postLogin: User successfully logged in -', email);
-    return res.json({
-      message: 'User logged in.',
-      status: 'SUCCESS',
+    return res.status(200).json({
+      apiMessage: 'User logged in.',
+      apiStatus: 'SUCCESS',
+      errorCode: 0,
       values: {
         token: token,
         userId: user._id.toString(),
@@ -136,8 +144,9 @@ exports.postLogin = async (req, res, next) => {
   } catch(err) {
     console.log('postLogin: Response Error -', err.toString());
     return res.status(401).json({
-      message: 'Invalid email or password.',
-      status: 'FAILURE',
+      apiMessage: 'Invalid email or password.',
+      apiStatus: 'FAILURE',
+      errorCode: 4,
       values: {
         id: undefined,
         token: undefined,
