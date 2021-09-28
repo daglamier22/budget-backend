@@ -4,7 +4,7 @@
   "description": "NodeJS backend for personal budget app",
   "main": "app.js",
   "scripts": {
-    "test": "nyc mocha --recursive",
+    "test": "nyc mocha --recursive -r dotenv/config",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
