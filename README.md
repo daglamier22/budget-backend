@@ -1,5 +1,7 @@
 # BudgetBackend
 
+[![build status](https://github.com/daglamier22/vibranium/workflows/Node.js%20CI/badge.svg)](https://github.com/daglamier22/vibranium/actions)
+
 Server-side logic for personal budget application. Handles user authentication and database retrieval for front end budget app.
 
 ## Development server
