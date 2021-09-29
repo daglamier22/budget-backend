@@ -34,5 +34,6 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
       env:
+        CI: true
         MONGO_HOST: localhost
         MONGO_DEFAULT_DATABASE: budget
