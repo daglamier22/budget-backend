@@ -15,7 +15,6 @@ exports.signup = async (req, res, next) => {
       apiStatus: 'FAILURE',
       errorCode: 1,
       values: {
-        id: undefined,
         token: undefined,
         userId: undefined
       }
@@ -33,7 +32,6 @@ exports.signup = async (req, res, next) => {
         apiStatus: 'FAILURE',
         errorCode: 2,
         values: {
-          id: undefined,
           token: undefined,
           userId: undefined
         }
@@ -49,11 +47,10 @@ exports.signup = async (req, res, next) => {
     return res.status(201).json({
       apiMessage: 'User created',
       apiStatus: 'SUCCESS',
-      errorCode: 3,
+      errorCode: 0,
       values: {
-        id: result._id,
-        token: undefined,
-        userId: undefined
+        userId: result._id.toString(),
+        token: undefined
       }
     });
   } catch(err) {
@@ -61,9 +58,8 @@ exports.signup = async (req, res, next) => {
     res.status(err.statuscode | 500).json({
       apiMessage: 'Unable to create user',
       apiStatus: 'FAILURE',
-      errorCode: 4,
+      errorCode: 3,
       values: {
-        id: undefined,
         token: undefined,
         userId: undefined
       }
