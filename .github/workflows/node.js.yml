@@ -37,3 +37,4 @@ jobs:
         CI: true
         MONGO_HOST: localhost
         MONGO_DEFAULT_DATABASE: budget
+        JWT_SECRET: testsecretvalue
