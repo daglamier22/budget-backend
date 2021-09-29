@@ -37,5 +37,12 @@
     "nodemon": "^2.0.12",
     "nyc": "^15.1.0",
     "sinon": "^11.1.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "2.1.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   }
 }

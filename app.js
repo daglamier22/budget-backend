@@ -17,7 +17,8 @@ const app = express();
 // handle cors with the cors package
 const allowedOrigins = [
   'http://localhost:4200',
-  'https://daglamier22.github.io'
+  'http://localhost:8080',
+  'https://budget-palladium.herokuapp.com'
 ];
 app.use(cors({
   methods: ['GET, POST, PUT, PATCH, DELETE, OPTIONS'],
