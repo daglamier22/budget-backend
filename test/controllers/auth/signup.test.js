@@ -3,7 +3,9 @@ const expect = chai.expect;
 const bcrypt = require('bcrypt');
 const sinon = require('sinon');
 const mongoose = require('mongoose');
-const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DEFAULT_DATABASE}-test?retryWrites=true`;
+const MONGODB_URI = process.env.CI ?
+  'mongodb://localhost' :
+  `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DEFAULT_DATABASE}-test?retryWrites=true`;
 
 const User = require('../../../models/user');
 const { signup } = require('../../../controllers/auth/signup');
