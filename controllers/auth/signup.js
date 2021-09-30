@@ -1,3 +1,4 @@
+const logger = require('../../utils/logger');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
@@ -9,7 +10,7 @@ exports.signup = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('postSignup: Error -', errors.array()[0].msg);
+    logger.error(`signup: Error - ${errors.array()[0].msg}`);
     return res.status(422).json({
       apiMessage: errors.array()[0].msg,
       apiStatus: 'FAILURE',
@@ -21,12 +22,12 @@ exports.signup = async (req, res, next) => {
     });
   }
 
-  console.log('postSignup: Request -', req.body);
+  logger.info(`signup: Request - ${req.body}`);
 
   try {
     const user = await User.findOne({email: email});
     if (user) {
-      console.log('postSignup: User already exists -', email);
+      logger.error(`signup: User already exists - ${email}`);
       return res.status(400).json({
         apiMessage: 'User already exists',
         apiStatus: 'FAILURE',
@@ -43,7 +44,7 @@ exports.signup = async (req, res, next) => {
       password: hashedPassword
     });
     const result = await newUser.save();
-    console.log('postSignup: User created -', email);
+    logger.info(`signup: User created - ${email}`);
     return res.status(201).json({
       apiMessage: 'User created',
       apiStatus: 'SUCCESS',
@@ -54,7 +55,7 @@ exports.signup = async (req, res, next) => {
       }
     });
   } catch(err) {
-    console.log('postSignup: Response Error -', err.toString());
+    logger.error(`signup: Response Error - ${err}`);
     res.status(err.statuscode | 500).json({
       apiMessage: 'Unable to create user',
       apiStatus: 'FAILURE',

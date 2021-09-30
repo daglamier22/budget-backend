@@ -1,3 +1,4 @@
+const logger = require('../../utils/logger');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -10,7 +11,7 @@ exports.login = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('postLogin: Error -', errors.array()[0].msg);
+    logger.error(`login: Error - ${errors.array()[0].msg}`);
     return res.status(400).json({
       apiMessage: errors.array()[0].msg,
       apiStatus: 'FAILURE',
@@ -22,12 +23,12 @@ exports.login = async (req, res, next) => {
     });
   }
 
-  console.log('postLogin: Request -', req.body);
+  logger.info(`login: Request - ${req.body}`);
 
   try {
     const user = await User.findOne({email: email});
     if (!user) {
-      console.log('postLogin: User not found -', email);
+      logger.error(`login: User not found - ${email}`);
       return res.status(401).json({
         apiMessage: 'Invalid email or password',
         apiStatus: 'FAILURE',
@@ -40,7 +41,7 @@ exports.login = async (req, res, next) => {
     }
     const doMatch = await bcrypt.compare(password, user.password);
     if (!doMatch) {
-      console.log('postLogin: Password does not match for user -', email);
+      logger.error(`login: Password does not match for user - ${email}`);
       return res.status(401).json({
         apiMessage: 'Invalid email or password',
         apiStatus: 'FAILURE',
@@ -59,7 +60,7 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h'}
     );
-    console.log('postLogin: User successfully logged in -', email);
+    logger.info(`login: User successfully logged in - ${email}`);
     return res.status(200).json({
       apiMessage: 'User logged in',
       apiStatus: 'SUCCESS',
@@ -70,7 +71,7 @@ exports.login = async (req, res, next) => {
       }
     });
   } catch(err) {
-    console.log('postLogin: Response Error -', err.toString());
+    logger.error(`login: Response Error - ${err}`);
     return res.status(500).json({
       apiMessage: 'Invalid email or password',
       apiStatus: 'FAILURE',

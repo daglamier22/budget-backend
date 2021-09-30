@@ -13,8 +13,6 @@ router.post(
     check('password', 'Invalid password').isString().isLength({min: 4}),
     check('confirmPassword', 'Invalid confirmPassword').isString().isLength({min: 4}),
     check('password').custom((value, { req }) => {
-      console.log(value);
-      console.log(req.body.confirmPassword);
       if (value !== req.body.confirmPassword) {
         return Promise.reject('don\'t match');
       }
