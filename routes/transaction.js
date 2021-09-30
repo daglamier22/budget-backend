@@ -53,15 +53,11 @@ router.post(
   isAuth,
   [
     body('_id').isString().custom((value, { req }) => {
-      console.log('test0');
       return Transaction.findById(req.body._id)
         .then(transaction => {
-          console.log('test1');
           if (!transaction) {
-            console.log('test2');
             return Promise.reject('Could not find transaction');
           }
-          console.log('test3');
         })
         .catch(error => {
           if (error !== 'Could not find transaction') {
