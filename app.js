@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
 
+const logger = require('./utils/logger');
+
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}/${process.env.MONGO_DEFAULT_DATABASE}${process.env.MONGO_DEFAULT_DATABASE_SUB}?retryWrites=true`;
 
 const testRoutes = require('./routes/tests');
@@ -46,7 +48,7 @@ app.use(express.json());
 app.use(helmet());
 
 // log incoming requests
-app.use(morgan('combined'));
+app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(testRoutes);
 app.use(authRoutes);
@@ -59,5 +61,5 @@ mongoose
     app.listen(process.env.PORT || 3000);
   })
   .catch(err => {
-    console.log(err);
+    logger.error(err);
   });
