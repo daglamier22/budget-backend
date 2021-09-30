@@ -1,9 +1,10 @@
+const logger = require('../utils/logger');
 const { validationResult } = require('express-validator');
 
 const Transaction = require('../models/transaction');
 
 exports.getAllTransactions = async (req, res, next) => {
-  console.log('getTransactions: Request -', req.userId);
+  logger.info(`getTransactions: Request - ${req.userId}`);
   try {
     const dbTransactions = await Transaction.find({userId: req.userId});
     const returnedTransactions = [];
@@ -20,7 +21,7 @@ exports.getAllTransactions = async (req, res, next) => {
         note: transaction.note
       });
     });
-    console.log('getTransactions: Response -', req.userId, returnedTransactions);
+    logger.info(`getTransactions: Response - ${req.userId} ${returnedTransactions}`);
     res.status(200).json({
       message: 'Transactions retrieved',
       status: 'SUCCESS',
@@ -29,7 +30,7 @@ exports.getAllTransactions = async (req, res, next) => {
       }
     });
   } catch (err) {
-    console.log('getTransactions: Response Error -', req.userId, err.toString());
+    logger.error(`getTransactions: Response Error - ${req.userId} ${err}`);
     res.status(err.statuscode | 500).json({
       message: 'Unable to retrieve transactions',
       status: 'FAILURE',
@@ -44,7 +45,7 @@ exports.getAccountTransactions = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    console.log('getAccountTransactions: Error -', message);
+    logger.error(`getAccountTransactions: Error - ${message}`);
     return res.status(400).json({
       message: message,
       status: 'FAILURE',
@@ -54,7 +55,7 @@ exports.getAccountTransactions = async (req, res, next) => {
     });
   }
 
-  console.log('getAccountTransactions: Request -', req.userId);
+  logger.info(`getAccountTransactions: Request - ${req.userId}`);
   try {
     const dbTransactions = await Transaction.find({userId: req.userId, accountName: req.headers.accountid});
     const returnedTransactions = [];
@@ -71,7 +72,7 @@ exports.getAccountTransactions = async (req, res, next) => {
         note: transaction.note
       });
     });
-    console.log('getAccountTransactions: Response -', req.userId, returnedTransactions);
+    logger.info(`getAccountTransactions: Response - ${req.userId} ${returnedTransactions}`);
     res.status(200).json({
       message: 'Transactions retrieved',
       status: 'SUCCESS',
@@ -80,7 +81,7 @@ exports.getAccountTransactions = async (req, res, next) => {
       }
     });
   } catch (err) {
-    console.log('getAccountTransactions: Response Error -', req.userId, err.toString());
+    logger.error(`getAccountTransactions: Response Error - ${req.userId} ${err}`);
     res.status(err.statuscode | 500).json({
       message: 'Unable to retrieve transactions',
       status: 'FAILURE',
@@ -95,14 +96,14 @@ exports.postAddTransaction = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    console.log('postAddTransaction: Error -', message);
+    logger.error(`postAddTransaction: Error - ${message}`);
     return res.status(400).json({
       message: message,
       status: 'FAILURE'
     });
   }
 
-  console.log('postAddTransaction: Request -', req.body);
+  logger.info(`postAddTransaction: Request - ${req.body}`);
 
   const transaction = new Transaction({
     userId: req.userId,
@@ -117,7 +118,7 @@ exports.postAddTransaction = async (req, res, next) => {
   });
   try {
     await transaction.save();
-    console.log('postAddTransaction: Response -', req.body.description);
+    logger.info(`postAddTransaction: Response - ${req.body.description}`);
     res.status(201).json({
       message: 'Transaction created',
       status: 'SUCCESS'
@@ -129,7 +130,7 @@ exports.postAddTransaction = async (req, res, next) => {
     } else {
       message = 'Unable to create transaction';
     }
-    console.log('postAddTransaction: Response Error -', err.toString());
+    logger.error(`postAddTransaction: Response Error - ${err}`);
     res.status(err.statuscode | 500).json({
       message: message,
       status: 'FAILURE'
@@ -141,20 +142,20 @@ exports.postEditTransaction = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    console.log('postEditTransaction: Error -', message);
+    logger.error(`postEditTransaction: Error - ${message}`);
     return res.status(400).json({
       errors: message,
       status: 'FAILURE'
     });
   }
 
-  console.log('postEditTransaction: Request -', req.body);
+  logger.info(`postEditTransaction: Request - ${req.body}`);
 
   try {
     const transaction = await Transaction.findById(req.body._id);
     if (!transaction) {
       const message = 'Could not find transaction';
-      console.log('postEditTransaction: Response Error -', message);
+      logger.error(`postEditTransaction: Response Error - ${message}`);
       res.status(404).json({
         message: message,
         status: 'FAILURE'
@@ -162,7 +163,7 @@ exports.postEditTransaction = async (req, res, next) => {
     }
     if (transaction.userId.toString() !== req.userId) {
       const message = 'Not authorized';
-      console.log('postEditTransaction: Response Error -', message);
+      logger.error(`postEditTransaction: Response Error - ${message}`);
       res.status(403).json({
         message: message,
         status: 'FAILURE'
@@ -177,13 +178,13 @@ exports.postEditTransaction = async (req, res, next) => {
     transaction.transactionType = req.body.transactionType;
     transaction.note = req.body.note;
     await transaction.save();
-    console.log('postEditTransaction: Response-', req.body._id);
+    logger.info(`postEditTransaction: Response- ${req.body._id}`);
     res.status(200).json({
       message: 'Transaction updated',
       status: 'SUCCESS'
     });
   } catch(err) {
-    console.log('postEditTransaction: Response Error -', err.toString());
+    logger.error(`postEditTransaction: Response Error - ${err}`);
     res.status(err.statuscode | 500).json({
       message: 'Unable to edit transaction',
       status: 'FAILURE'

@@ -1,9 +1,10 @@
+const logger = require('../utils/logger');
 const { validationResult } = require('express-validator');
 
 const Account = require('../models/account');
 
 exports.getAccounts = async (req, res, next) => {
-  console.log('getAccounts: Request -', req.userId);
+  logger.info(`getAccounts: Request - ${req.userId}`);
   try {
     const dbAccounts = await Account.find({userId: req.userId});
     const returnedAccounts = [];
@@ -21,7 +22,7 @@ exports.getAccounts = async (req, res, next) => {
         loanOriginationDate: account.loanOriginationDate
       });
     });
-    console.log('getAccounts: Response -', req.userId, returnedAccounts);
+    logger.info(`getAccounts: Response - ${req.userId} ${returnedAccounts}`);
     res.status(200).json({
       message: 'Accounts retrieved',
       status: 'SUCCESS',
@@ -30,7 +31,7 @@ exports.getAccounts = async (req, res, next) => {
       }
     });
   } catch (err) {
-    console.log('getAccounts: Response Error -', req.userId, err.toString());
+    logger.error(`getAccounts: Response Error - ${req.userId} ${err}`);
     res.status(err.statuscode | 500).json({
       message: 'Unable to retrieve accounts',
       status: 'FAILURE',
@@ -45,14 +46,14 @@ exports.postAddAccount = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    console.log('postAddAccount: Error -', message);
+    logger.error(`postAddAccount: Error - ${message}`);
     return res.status(400).json({
       message: message,
       status: 'FAILURE'
     });
   }
 
-  console.log('postAddAccount: Request -', req.body);
+  logger.info(`postAddAccount: Request - ${req.body}`);
 
   const account = new Account({
     userId: req.userId,
@@ -68,7 +69,7 @@ exports.postAddAccount = async (req, res, next) => {
   });
   try {
     await account.save();
-    console.log('postAddAccount: Response -', req.body.accountName);
+    logger.info(`postAddAccount: Response - ${req.body.accountName}`);
     res.status(201).json({
       message: 'Account created',
       status: 'SUCCESS'
@@ -80,7 +81,7 @@ exports.postAddAccount = async (req, res, next) => {
     } else {
       message = 'Unable to create account';
     }
-    console.log('postAddAccount: Response Error -', err.toString());
+    logger.error(`postAddAccount: Response Error - ${err}`);
     res.status(err.statuscode | 500).json({
       message: message,
       status: 'FAILURE'
@@ -92,20 +93,20 @@ exports.postEditAccount = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    console.log('postEditAccount: Error -', message);
+    logger.error(`postEditAccount: Error - ${message}`);
     return res.status(400).json({
       errors: message,
       status: 'FAILURE'
     });
   }
 
-  console.log('postEditAccount: Request -', req.body);
+  logger.info(`postEditAccount: Request - ${req.body}`);
 
   try {
     const account = await Account.findById(req.body._id);
     if (!account) {
       const message = 'Could not find account';
-      console.log('postEditAccount: Response Error -', message);
+      logger.error(`postEditAccount: Response Error - ${message}`);
       res.status(404).json({
         message: message,
         status: 'FAILURE'
@@ -113,7 +114,7 @@ exports.postEditAccount = async (req, res, next) => {
     }
     if (account.userId.toString() !== req.userId) {
       const message = 'Not authorized';
-      console.log('postEditAccount: Response Error -', message);
+      logger.error(`postEditAccount: Response Error - ${message}`);
       res.status(403).json({
         message: message,
         status: 'FAILURE'
@@ -129,13 +130,13 @@ exports.postEditAccount = async (req, res, next) => {
     account.loanTerm = req.body.loanTerm;
     account.loanOriginationDate = req.body.loanOriginationDate;
     await account.save();
-    console.log('postEditAccount: Response-', req.body._id);
+    logger.info(`postEditAccount: Response- ${req.body._id}`);
     res.status(200).json({
       message: 'Account updated',
       status: 'SUCCESS'
     });
   } catch(err) {
-    console.log('postEditAccount: Response Error -', err.toString());
+    logger.error(`postEditAccount: Response Error - ${err}`);
     res.status(err.statuscode | 500).json({
       message: 'Unable to edit account',
       status: 'FAILURE'
