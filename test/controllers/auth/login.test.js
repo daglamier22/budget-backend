@@ -167,7 +167,6 @@ describe('Auth Controller - Login', function() {
       expect(res.apiMessage).to.equal('User logged in');
       expect(res).to.have.property('errorCode');
       expect(res.errorCode).to.equal(0);
-      // expect(jwt.sign.called).to.be.true;
       expect(res).to.have.property('values');
       expect(res.values).to.have.property('token');
       expect(res.values).to.have.property('userId');
