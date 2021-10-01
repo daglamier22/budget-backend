@@ -1,13 +1,16 @@
 const express = require('express');
 const { body } = require('express-validator');
 
-const accountController = require('../controllers/account');
+const { getAccounts } = require('../controllers/account/getAccounts');
+const { addAccount } = require('../controllers/account/addAccount');
+const { editAccount } = require('../controllers/account/editAccount');
+
 const isAuth = require('../middleware/is-auth');
 const Account = require('../models/account');
 
 const router = express.Router();
 
-router.get('/get-accounts', isAuth, accountController.getAccounts);
+router.get('/get-accounts', isAuth, getAccounts);
 
 router.post(
   '/add-account',
@@ -26,7 +29,7 @@ router.post(
     body('originalBalance').isString(),
     body('currentBalance').isString()
   ],
-  accountController.postAddAccount
+  addAccount
 );
 
 router.post(
@@ -52,7 +55,7 @@ router.post(
     body('originalBalance').isString(),
     body('currentBalance').isString()
   ],
-  accountController.postEditAccount
+  editAccount
 );
 
 module.exports = router;
