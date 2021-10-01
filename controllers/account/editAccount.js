@@ -28,8 +28,6 @@ exports.editAccount = async (req, res, next) => {
         errorCode: 2
       });
     }
-    console.log(account.userId.toString());
-    console.log(req.userId);
     if (account.userId.toString() !== req.userId) {
       const message = 'Not authorized';
       logger.error(`postEditAccount: Response Error - ${message}`);
