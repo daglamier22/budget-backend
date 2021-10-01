@@ -1,0 +1,13 @@
+{
+  "exclude": [
+    "coverage/**",
+    "packages/*/test/**",
+    "test/**",
+    "test{,-*}.js",
+    "**/*{.,-}test.js",
+    "**/__tests__/**",
+    "**/node_modules/**",
+    "**/babel.config.js",
+    "utils/logger.js"
+  ]
+}
