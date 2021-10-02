@@ -50,10 +50,10 @@ app.use(helmet());
 // log incoming requests
 app.use(morgan('combined', { stream: logger.stream }));
 
-app.use(testRoutes);
-app.use(authRoutes);
-app.use(accountRoutes);
-app.use(transactionRoutes);
+app.use('/tests', testRoutes);
+app.use('/auth', authRoutes);
+app.use('/accounts', accountRoutes);
+app.use('/transactions', transactionRoutes);
 
 mongoose
   .connect(MONGODB_URI)
