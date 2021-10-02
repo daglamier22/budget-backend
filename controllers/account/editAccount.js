@@ -2,12 +2,13 @@ const logger = require('../../utils/logger');
 const { validationResult } = require('express-validator');
 
 const Account = require('../../models/account');
+const filename = 'editAccount'; // used for logging
 
 exports.editAccount = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    logger.error(`postEditAccount: Error - ${message}`);
+    logger.error(`${filename}: Error - ${message}`);
     return res.status(400).json({
       apiMessage: message,
       apiStatus: 'FAILURE',
@@ -15,13 +16,13 @@ exports.editAccount = async (req, res, next) => {
     });
   }
 
-  logger.info(`postEditAccount: Request - ${req.body}`);
+  logger.info(`${filename}: Request - ${req.body}`);
 
   try {
     const account = await Account.findById(req.body._id);
     if (!account) {
       const message = 'Could not find account';
-      logger.error(`postEditAccount: Response Error - ${message}`);
+      logger.error(`${filename}: Response Error - ${message}`);
       return res.status(404).json({
         apiMessage: message,
         apiStatus: 'FAILURE',
@@ -30,7 +31,7 @@ exports.editAccount = async (req, res, next) => {
     }
     if (account.userId.toString() !== req.userId) {
       const message = 'Not authorized';
-      logger.error(`postEditAccount: Response Error - ${message}`);
+      logger.error(`${filename}: Response Error - ${message}`);
       return res.status(403).json({
         apiMessage: message,
         apiStatus: 'FAILURE',
@@ -47,14 +48,14 @@ exports.editAccount = async (req, res, next) => {
     account.loanTerm = req.body.loanTerm;
     account.loanOriginationDate = req.body.loanOriginationDate;
     await account.save();
-    logger.info(`postEditAccount: Response- ${req.body._id}`);
+    logger.info(`${filename}: Response- ${req.body._id}`);
     return res.status(200).json({
       apiMessage: 'Account updated',
       apiStatus: 'SUCCESS',
       errorCode: 0
     });
   } catch(err) {
-    logger.error(`postEditAccount: Response Error - ${err}`);
+    logger.error(`${filename}: Response Error - ${err}`);
     return res.status(err.statuscode | 500).json({
       apiMessage: 'Unable to edit account',
       apiStatus: 'FAILURE',

@@ -1,9 +1,10 @@
 const logger = require('../../utils/logger');
 
 const Account = require('../../models/account');
+const filename = 'getAccounts'; // used for logging
 
 exports.getAccounts = async (req, res, next) => {
-  logger.info(`getAccounts: Request - ${req.userId}`);
+  logger.info(`${filename}: Request - ${req.userId}`);
   try {
     const dbAccounts = await Account.find({userId: req.userId});
     const returnedAccounts = [];
@@ -21,7 +22,7 @@ exports.getAccounts = async (req, res, next) => {
         loanOriginationDate: account.loanOriginationDate
       });
     });
-    logger.info(`getAccounts: Response - ${req.userId} ${returnedAccounts}`);
+    logger.info(`${filename}: Response - ${req.userId} ${returnedAccounts}`);
     return res.status(200).json({
       apiMessage: 'Accounts retrieved',
       apiStatus: 'SUCCESS',
@@ -31,7 +32,7 @@ exports.getAccounts = async (req, res, next) => {
       }
     });
   } catch (err) {
-    logger.error(`getAccounts: Response Error - ${req.userId} ${err}`);
+    logger.error(`${filename}: Response Error - ${req.userId} ${err}`);
     return res.status(err.statuscode | 500).json({
       apiMessage: 'Unable to retrieve accounts',
       apiStatus: 'FAILURE',

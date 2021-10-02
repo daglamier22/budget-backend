@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 const User = require('../../models/user');
+const filename = 'login'; // used for logging
 
 exports.login = async (req, res, next) => {
   const email = req.body.email;
@@ -11,7 +12,7 @@ exports.login = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    logger.error(`login: Error - ${errors.array()[0].msg}`);
+    logger.error(`${filename}: Error - ${errors.array()[0].msg}`);
     return res.status(400).json({
       apiMessage: errors.array()[0].msg,
       apiStatus: 'FAILURE',
@@ -23,12 +24,12 @@ exports.login = async (req, res, next) => {
     });
   }
 
-  logger.info(`login: Request - ${req.body}`);
+  logger.info(`${filename}: Request - ${req.body}`);
 
   try {
     const user = await User.findOne({email: email});
     if (!user) {
-      logger.error(`login: User not found - ${email}`);
+      logger.error(`${filename}: User not found - ${email}`);
       return res.status(401).json({
         apiMessage: 'Invalid email or password',
         apiStatus: 'FAILURE',
@@ -41,7 +42,7 @@ exports.login = async (req, res, next) => {
     }
     const doMatch = await bcrypt.compare(password, user.password);
     if (!doMatch) {
-      logger.error(`login: Password does not match for user - ${email}`);
+      logger.error(`${filename}: Password does not match for user - ${email}`);
       return res.status(401).json({
         apiMessage: 'Invalid email or password',
         apiStatus: 'FAILURE',
@@ -60,7 +61,7 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h'}
     );
-    logger.info(`login: User successfully logged in - ${email}`);
+    logger.info(`${filename}: User successfully logged in - ${email}`);
     return res.status(200).json({
       apiMessage: 'User logged in',
       apiStatus: 'SUCCESS',
@@ -71,7 +72,7 @@ exports.login = async (req, res, next) => {
       }
     });
   } catch(err) {
-    logger.error(`login: Response Error - ${err}`);
+    logger.error(`${filename}: Response Error - ${err}`);
     return res.status(500).json({
       apiMessage: 'Invalid email or password',
       apiStatus: 'FAILURE',
