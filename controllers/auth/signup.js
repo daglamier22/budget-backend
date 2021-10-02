@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
 const User = require('../../models/user');
+const filename = 'signup'; // used for logging
 
 exports.signup = async (req, res, next) => {
   const email = req.body.email;
@@ -10,7 +11,7 @@ exports.signup = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    logger.error(`signup: Error - ${errors.array()[0].msg}`);
+    logger.error(`${filename}: Error - ${errors.array()[0].msg}`);
     return res.status(422).json({
       apiMessage: errors.array()[0].msg,
       apiStatus: 'FAILURE',
@@ -22,12 +23,12 @@ exports.signup = async (req, res, next) => {
     });
   }
 
-  logger.info(`signup: Request - ${req.body}`);
+  logger.info(`${filename}: Request - ${req.body}`);
 
   try {
     const user = await User.findOne({email: email});
     if (user) {
-      logger.error(`signup: User already exists - ${email}`);
+      logger.error(`${filename}: User already exists - ${email}`);
       return res.status(400).json({
         apiMessage: 'User already exists',
         apiStatus: 'FAILURE',
@@ -44,7 +45,7 @@ exports.signup = async (req, res, next) => {
       password: hashedPassword
     });
     const result = await newUser.save();
-    logger.info(`signup: User created - ${email}`);
+    logger.info(`${filename}: User created - ${email}`);
     return res.status(201).json({
       apiMessage: 'User created',
       apiStatus: 'SUCCESS',
@@ -55,7 +56,7 @@ exports.signup = async (req, res, next) => {
       }
     });
   } catch(err) {
-    logger.error(`signup: Response Error - ${err}`);
+    logger.error(`${filename}: Response Error - ${err}`);
     res.status(err.statuscode | 500).json({
       apiMessage: 'Unable to create user',
       apiStatus: 'FAILURE',

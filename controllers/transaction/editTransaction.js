@@ -1,10 +1,10 @@
 const logger = require('../../utils/logger');
 const { validationResult } = require('express-validator');
 
-const Account = require('../../models/account');
-const filename = 'editAccount'; // used for logging
+const Transaction = require('../../models/transaction');
+const filename = 'editTransaction'; // used for logging
 
-exports.editAccount = async (req, res, next) => {
+exports.editTransaction = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
@@ -19,9 +19,9 @@ exports.editAccount = async (req, res, next) => {
   logger.info(`${filename}: Request - ${req.body}`);
 
   try {
-    const account = await Account.findById(req.body._id);
-    if (!account) {
-      const message = 'Could not find account';
+    const transaction = await Transaction.findById(req.body._id);
+    if (!transaction) {
+      const message = 'Could not find transaction';
       logger.error(`${filename}: Response Error - ${message}`);
       return res.status(404).json({
         apiMessage: message,
@@ -29,7 +29,7 @@ exports.editAccount = async (req, res, next) => {
         errorCode: 2
       });
     }
-    if (account.userId.toString() !== req.userId) {
+    if (transaction.userId.toString() !== req.userId) {
       const message = 'Not authorized';
       logger.error(`${filename}: Response Error - ${message}`);
       return res.status(403).json({
@@ -38,26 +38,25 @@ exports.editAccount = async (req, res, next) => {
         errorCode: 3
       });
     }
-    account.firmName = req.body.firmName;
-    account.accountName = req.body.accountName;
-    account.accountType = req.body.accountType;
-    account.originalBalance = req.body.originalBalance;
-    account.currentBalance = req.body.currentBalance;
-    account.interestRate = req.body.interestRate;
-    account.creditLimit = req.body.creditLimit;
-    account.loanTerm = req.body.loanTerm;
-    account.loanOriginationDate = req.body.loanOriginationDate;
-    await account.save();
+    transaction.date = req.body.date;
+    transaction.accountName = req.body.accountNameId;
+    transaction.description = req.body.description;
+    transaction.categoryParent = req.body.categoryParent;
+    transaction.categoryChild = req.body.categoryChild;
+    transaction.amount = req.body.amount;
+    transaction.transactionType = req.body.transactionType;
+    transaction.note = req.body.note;
+    await transaction.save();
     logger.info(`${filename}: Response- ${req.body._id}`);
     return res.status(200).json({
-      apiMessage: 'Account updated',
+      apiMessage: 'Transaction updated',
       apiStatus: 'SUCCESS',
       errorCode: 0
     });
   } catch(err) {
     logger.error(`${filename}: Response Error - ${err}`);
     return res.status(err.statuscode | 500).json({
-      apiMessage: 'Unable to edit account',
+      apiMessage: 'Unable to edit transaction',
       apiStatus: 'FAILURE',
       errorCode: 4
     });

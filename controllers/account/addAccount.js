@@ -2,12 +2,13 @@ const logger = require('../../utils/logger');
 const { validationResult } = require('express-validator');
 
 const Account = require('../../models/account');
+const filename = 'addAccount'; // used for logging
 
 exports.addAccount = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const message = errors.array()[0].msg;
-    logger.error(`postAddAccount: Error - ${message}`);
+    logger.error(`${filename}: Error - ${message}`);
     return res.status(400).json({
       apiMessage: message,
       apiStatus: 'FAILURE',
@@ -15,7 +16,7 @@ exports.addAccount = async (req, res, next) => {
     });
   }
 
-  logger.info(`postAddAccount: Request - ${req.body}`);
+  logger.info(`${filename}: Request - ${req.body}`);
 
   const account = new Account({
     userId: req.userId,
@@ -31,7 +32,7 @@ exports.addAccount = async (req, res, next) => {
   });
   try {
     await account.save();
-    logger.info(`postAddAccount: Response - ${req.body.accountName}`);
+    logger.info(`${filename}: Response - ${req.body.accountName}`);
     return res.status(201).json({
       apiMessage: 'Account created',
       apiStatus: 'SUCCESS',
@@ -44,7 +45,7 @@ exports.addAccount = async (req, res, next) => {
     } else {
       message = 'Unable to create account';
     }
-    logger.error(`postAddAccount: Response Error - ${err}`);
+    logger.error(`${filename}: Response Error - ${err}`);
     return res.status(err.statuscode | 500).json({
       apiMessage: message,
       apiStatus: 'FAILURE',
