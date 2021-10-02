@@ -10,10 +10,10 @@ const Account = require('../models/account');
 
 const router = express.Router();
 
-router.get('/get-accounts', isAuth, getAccounts);
+router.get('/getAccounts', isAuth, getAccounts);
 
 router.post(
-  '/add-account',
+  '/addAccount',
   isAuth,
   [
     body('firmName').isString(),
@@ -33,7 +33,7 @@ router.post(
 );
 
 router.post(
-  '/edit-account',
+  '/editAccount',
   isAuth,
   [
     body('_id').isString().custom((value, { req }) => {

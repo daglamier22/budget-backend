@@ -1,14 +1,18 @@
 const express = require('express');
 const { body, header } = require('express-validator');
 
-const transactionController = require('../controllers/transaction');
+const { addTransaction } = require('../controllers/transaction/addTransaction');
+const { editTransaction } = require('../controllers/transaction/editTransaction');
+const { getTransactionsByAccountName } = require('../controllers/transaction/getTransactionsByAccountName');
+const { getTransactionsByUserId } = require('../controllers/transaction/getTransactionsByUserId');
+
 const isAuth = require('../middleware/is-auth');
 const Transaction = require('../models/transaction');
 const Account = require('../models/account');
 
 const router = express.Router();
 
-router.get('/get-all-transactions', isAuth, transactionController.getAllTransactions);
+router.get('/getTransactionsByUserId', isAuth, getTransactionsByUserId);
 
 router.get('/get-account-transactions',
   isAuth,
@@ -22,11 +26,11 @@ router.get('/get-account-transactions',
         });
     })
   ],
-  transactionController.getAccountTransactions
+  getTransactionsByAccountName
 );
 
 router.post(
-  '/add-transaction',
+  '/addTransaction',
   isAuth,
   [
     body('date').isString(),
@@ -45,11 +49,11 @@ router.post(
     body('amount').isString(),
     body('transactionType').isString()
   ],
-  transactionController.postAddTransaction
+  addTransaction
 );
 
 router.post(
-  '/edit-transaction',
+  '/editTransaction',
   isAuth,
   [
     body('_id').isString().custom((value, { req }) => {
@@ -81,7 +85,7 @@ router.post(
     body('amount').isString(),
     body('transactionType').isString()
   ],
-  transactionController.postEditTransaction
+  editTransaction
 );
 
 module.exports = router;
