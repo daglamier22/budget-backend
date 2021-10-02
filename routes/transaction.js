@@ -1,5 +1,5 @@
 const express = require('express');
-const { body, header } = require('express-validator');
+const { body, param } = require('express-validator');
 
 const { addTransaction } = require('../controllers/transaction/addTransaction');
 const { editTransaction } = require('../controllers/transaction/editTransaction');
@@ -14,10 +14,10 @@ const router = express.Router();
 
 router.get('/getTransactionsByUserId', isAuth, getTransactionsByUserId);
 
-router.get('/get-account-transactions',
+router.get('/get-account-transactions/:accountId',
   isAuth,
   [
-    header('accountId').isString().custom((value, { req }) => {
+    param('accountId').isString().custom((value, { req }) => {
       return Account.findOne({ userId: req.userId, _id: value })
         .then(account => {
           if (!account) {
