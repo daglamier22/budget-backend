@@ -20,7 +20,8 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:4200',
   'http://localhost:8080',
-  'https://budget-palladium.herokuapp.com'
+  'https://budget-palladium.herokuapp.com',
+  'https://palladium.bmcc.digital'
 ];
 app.use(cors({
   methods: ['GET, POST, PUT, PATCH, DELETE, OPTIONS'],
