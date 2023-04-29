@@ -29,6 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.4",
     "morgan": "^1.10.0",
+    "plaid": "^13.0.0",
     "winston": "^3.3.3",
     "winston-mongodb": "^5.0.7"
   },
