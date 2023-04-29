@@ -33,7 +33,8 @@ exports.createLinkToken = async (req, res, next) => {
       apiStatus: 'FAILURE',
       errorCode: 2,
       values: {
-        linkToken: ''
+        linkToken: '',
+        expiration: ''
       }
     });
   }
