@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'development') {
     options: { useUnifiedTopology: true },
     collection: 'logging',
     format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-    silent: true,
+    // silent: true,
     level: 'http'
   }));
 }
