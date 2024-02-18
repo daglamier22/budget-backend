@@ -13,6 +13,7 @@ const testRoutes = require('./routes/tests');
 const authRoutes = require('./routes/auth');
 const accountRoutes = require('./routes/account');
 const transactionRoutes = require('./routes/transaction');
+const itemRoutes = require('./routes/item');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use('/tests', testRoutes);
 app.use('/auth', authRoutes);
 app.use('/accounts', accountRoutes);
 app.use('/transactions', transactionRoutes);
+app.use('/item', itemRoutes);
 
 mongoose
   .connect(MONGODB_URI)
