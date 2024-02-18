@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const client = require('../../utils/plaid');
+const { client } = require('../../utils/plaid');
 
 const filename = 'exchangePublicToken'; // used for logging
 

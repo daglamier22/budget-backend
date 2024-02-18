@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const client = require('../../utils/plaid');
+const { client } = require('../../utils/plaid');
 
 const filename = 'createLinkToken'; // used for logging
 
@@ -10,9 +10,10 @@ exports.createLinkToken = async (req, res, next) => {
       client_user_id: req.userId
     },
     client_name: 'McHA',
-    products: ['auth'],
+    products: ['transactions'],
     language: 'en',
-    country_codes: ['US']
+    country_codes: ['US'],
+    webhook: process.env.PLAID_WEBHOOK_URL
   };
   try {
     const createLinkTokenResponse = await client.linkTokenCreate(request);
@@ -27,7 +28,7 @@ exports.createLinkToken = async (req, res, next) => {
       }
     });
   } catch (err) {
-    logger.error(`${filename}: Response Error - ${req?.userId} ${JSON.stringify(err?.response?.data)}`);
+    logger.error(`${filename}: Response Error - ${req?.userId} ${JSON.stringify(err?.response?.data ? err?.response?.data : err.message)}`);
     return res.status(err?.statuscode | 500).json({
       apiMessage: 'Unable to create link token',
       apiStatus: 'FAILURE',

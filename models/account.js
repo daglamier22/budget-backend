@@ -8,7 +8,28 @@ const accountSchema = new Schema({
     ref: 'User',
     required: true
   },
-  firmName: {
+  itemId: {
+    type: Schema.Types.String,
+    required: true
+  },
+  plaidAccountId: {
+    type: String
+  },
+  balances: {
+    available: {
+      type: Number
+    },
+    current: {
+      type: Number
+    },
+    isoCurrencyCode: {
+      type: String
+    },
+    limit: {
+      type: Number
+    }
+  },
+  mask: {
     type: String,
     required: true
   },
@@ -17,30 +38,24 @@ const accountSchema = new Schema({
     required: true,
     unique: true
   },
+  officialName: {
+    type: String,
+    required: true
+  },
   accountType: {
     type: String,
     required: true
   },
-  originalBalance: {
+  accountSubType: {
     type: String,
     required: true
-  },
-  currentBalance: {
-    type: String,
-    required: true
-  },
-  interestRate: {
-    type: String
-  },
-  creditLimit: {
-    type: String
-  },
-  loanTerm: {
-    type: String
-  },
-  loanOriginationDate: {
-    type: String,
   }
 });
+
+accountSchema.index({
+  userId: 1,
+  itemId: 1,
+  plaidAccountId: 1
+}, {unique: true, background: true});
 
 module.exports = mongoose.model('Account', accountSchema);
