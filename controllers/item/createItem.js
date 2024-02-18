@@ -1,6 +1,7 @@
 const logger = require('../../utils/logger');
 const { createRequest, requestProperty } = require('../../utils/request');
 const { exchangePublicToken } = require('./exchangePublicToken');
+const { updateItemAccountsAndTransactions } = require('../../utils/plaid');
 const Item = require('../../models/item');
 
 const filename = 'createItem'; // used for logging
@@ -27,10 +28,14 @@ exports.createItem = async (req, res, next) => {
       userId: req.userId,
       plaidItemId: exchangePublicTokenResponse?.values?.item_id,
       plaidAccessToken: exchangePublicTokenResponse?.values?.access_token,
-      plaidInstitutionId: req.body.institutionId
+      plaidInstitutionId: req.body.institutionId,
+      plaidInstitutionName: req.body.institutionName,
+      status: 'good'
     });
     await item.save();
     logger.info(`${filename}: Response - ${req?.userId} ${JSON.stringify(exchangePublicTokenResponse)}`);
+    const updateResponse = await updateItemAccountsAndTransactions(exchangePublicTokenResponse?.values?.item_id);
+    logger.info(`${filename}: addedCount - ${updateResponse.addedCount} - modifiedCount - ${updateResponse.modifiedCount} - removedCount - ${updateResponse.removedCount}`);
     res.status(200).json({
       apiMessage: '',
       apiStatus: 'SUCCESS',

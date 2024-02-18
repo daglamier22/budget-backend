@@ -21,7 +21,14 @@ const itemSchema = new Schema({
     type: String,
     required: true
   },
+  plaidInstitutionName: {
+    type: String,
+    required: true
+  },
   transactionsCursor: {
+    type: String
+  },
+  status: {
     type: String
   }
 });
